@@ -49,7 +49,7 @@ export class CollectionsService {
 
   async findOne(id: number) {
     try {
-      const collectionAlreadExists = await this.collectionRepository.findOneBy({ id });
+      const collectionAlreadExists = await this.collectionRepository.findOne({ where: {id}, relations: ['files'] });
       if (!collectionAlreadExists) throw new Error(`Coleção com o id ${id} não encontrada.`);
 
       return {

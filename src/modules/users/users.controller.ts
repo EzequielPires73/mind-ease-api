@@ -1,8 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { UserRoles } from './entities/user-roles.enum';
+import { AdminGuard } from './guards/admin.guard';
 
 @ApiTags('Users')
 @Controller('users')
@@ -12,6 +14,21 @@ export class UsersController {
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
+  }
+  
+  @ApiBearerAuth()
+  @Post('professional')
+  @UseGuards(AdminGuard)
+  createProfessional(@Body() createUserDto: CreateUserDto) {
+    return this.usersService.create(createUserDto, UserRoles.PROFESSIONAL);
+  }
+
+
+  @ApiBearerAuth()
+  @Post('admin')
+  @UseGuards(AdminGuard)
+  createAdmin(@Body() createUserDto: CreateUserDto) {
+    return this.usersService.create(createUserDto, UserRoles.ADMIN);
   }
 
   @Get()

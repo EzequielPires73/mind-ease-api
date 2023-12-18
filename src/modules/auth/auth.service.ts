@@ -20,7 +20,7 @@ export class AuthService {
 
             const { password: pass, ...result } = user;
 
-            const payload = { sub: user.id, id: user.id, name: user.name, email: user.email };
+            const payload = { sub: user.id, id: user.id, name: user.name, email: user.email, role: user.role };
 
             return {
                 success: true,
