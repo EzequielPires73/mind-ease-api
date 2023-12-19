@@ -5,7 +5,7 @@ import { UpdateCollectionFileDto } from './dto/update-collection-file.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { editFileName } from 'src/helpers/file-name';
-import { audioVideoFileFilter } from 'src/helpers/file-filter';
+import { audioVideoFileFilter, imageFileFilter } from 'src/helpers/file-filter';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Collection Files')
@@ -28,6 +28,18 @@ export class CollectionFilesController {
   }))
   upload(@Param('id', ParseIntPipe) id: number, @UploadedFile() file: Express.Multer.File) {
     return this.collectionFilesService.uploadFile(id, file);
+  }
+  
+  @Post('upload-thumbnail/:id')
+  @UseInterceptors(FileInterceptor('file', {
+    storage: diskStorage({
+      destination: './storage/files',
+      filename: editFileName,
+    }),
+    fileFilter: imageFileFilter
+  }))
+  uploadThumbnail(@Param('id', ParseIntPipe) id: number, @UploadedFile() file: Express.Multer.File) {
+    return this.collectionFilesService.uploadThumbnail(id, file);
   }
 
   @Get()

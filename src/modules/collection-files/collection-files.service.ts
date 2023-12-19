@@ -71,6 +71,32 @@ export class CollectionFilesService {
       }
     }
   }
+  
+  async uploadThumbnail(id: number, file: Express.Multer.File) {
+    try {
+      if(!file) throw new Error('É necessário um arquivo de audio ou vídeo');
+
+      const collectionFile = await this.collectionFilesRepository.findOneBy({id});
+      if(!collectionFile) throw new Error(`Arquivo de Coleção não existe com o id ${id}.`);
+
+      const path = file.path;
+
+      await this.collectionFilesRepository.update(id, {
+        thumbnail_path: path
+      })
+
+      return {
+        success: true,
+        message: 'Upload realizado com sucesso.',
+        path: file.path
+      }
+    } catch (error) {
+      return {
+        success: false,
+        message: error.message
+      }
+    }
+  }
 
   async findOne(id: number) {
     try {
@@ -112,7 +138,7 @@ export class CollectionFilesService {
   async remove(id: number) {
     try {
       const collectionFile = await this.collectionFilesRepository.findOneBy({id});
-      if(!collectionFile) throw new Error(`Arquivo de Coleção não existe com o id ${id}.`);
+      if(!collectionFile) throw new Error(`Arquivo de Coleção com o id ${id} não existe.`);
 
       await this.collectionFilesRepository.delete(id);
 
