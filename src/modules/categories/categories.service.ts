@@ -11,7 +11,7 @@ export class CategoriesService {
 
   async findAll() {
     try {
-      const [results, total] = await this.categoryRepository.findAndCount({relations: ['subcategories', 'subcategories.collections', 'subcategories.collections.files']});
+      const [results, total] = await this.categoryRepository.findAndCount({relations: ['subcategories', 'subcategories.collections', 'subcategories.collections.files'], order: {id: 'ASC'}});
       
       return {
         success: true,

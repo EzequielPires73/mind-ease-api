@@ -1,6 +1,7 @@
-import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { hashSync } from "bcrypt";
 import { UserRoles } from "./user-roles.enum";
+import { UserFileProgress } from "src/modules/collection-files/entities/collection-file.entity";
 
 @Entity()
 export class User {
@@ -21,6 +22,9 @@ export class User {
 
     @Column({type: 'simple-enum', enum: UserRoles, default: UserRoles.USER})
     role: UserRoles;
+
+    @OneToMany(() => UserFileProgress, userFileProgress => userFileProgress.user)
+    fileProgresses: UserFileProgress[];
 
     @BeforeInsert()
     hashPassword() {

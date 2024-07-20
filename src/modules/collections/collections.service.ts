@@ -68,10 +68,10 @@ export class CollectionsService {
     try {
       const slug = slugify(updateCollectionDto.name, { lower: true });
 
-      const collectionAlreadExists = await this.collectionRepository.findOneBy({ id });
+      const collectionAlreadExists = await this.collectionRepository.findOne({ where: {id}, relations: ['subcategory'] });
       if (!collectionAlreadExists) throw new Error(`Coleção com o id ${id} não encontrada.`);
 
-      await this.collectionRepository.update(id, { ...updateCollectionDto, slug, subcategory: { id: updateCollectionDto.subcategoryId } });
+      await this.collectionRepository.update(id, { ...updateCollectionDto, slug, subcategory: { id: updateCollectionDto?.subcategoryId ?? collectionAlreadExists.subcategory.id } });
 
       return {
         success: true,
